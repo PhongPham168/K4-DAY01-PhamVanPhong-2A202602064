@@ -23,7 +23,7 @@ Nguồn evidence: `classification_predictions.json`, sample `traffic`.
 - Record hạng 1 (`class_id`, `class_name`, `rank`, `score`, `taxonomy_name`):
   `class_id=468`, `class_name="cab"`, `rank=1`, `score=0.510915`, `taxonomy_name="ImageNet-1K"`
 - Record này mô tả toàn ảnh như thế nào?
-Đây là một nhãn cấp ảnh (image-level label): model tóm tắt toàn bộ nội dung ảnh đường phố `traffic` thành một nhãn duy nhất là "cab", với độ tin cậy ~51%. Nhãn này không chỉ ra vị trí của bất kỳ xe cụ thể nào trong ảnh, không đếm số lượng xe, và không phân biệt các loại xe khác nhau đang xuất hiện cùng lúc (xe buýt, xe con, xe van...) — nó chỉ là một phán đoán duy nhất cho tổng thể của cả bức ảnh.
+Tóm tắt toàn bộ nội dung ảnh đường phố `traffic` thành một nhãn duy nhất là "cab", với độ tin cậy ~51%. Nhãn này không chỉ ra vị trí của bất kỳ xe cụ thể nào trong ảnh, không đếm số lượng xe, và không phân biệt các loại xe khác nhau đang xuất hiện cùng lúc (xe buýt, xe con, xe van...) — chỉ là một phán đoán duy nhất cho tổng thể ảnh.
 - Ai định nghĩa class list mà checkpoint có thể dự đoán?
 Class list gồm 1000 lớp đến từ tập dữ liệu ImageNet-1K — tập dữ liệu mà checkpoint `yolo11n-cls.pt` đã được huấn luyện trên đó. Model chỉ có thể chọn ra lớp có xác suất cao nhất trong số 1000 lớp cố định này; nó không tự tạo ra tên lớp mới ngoài danh sách đã học.
 
@@ -32,18 +32,9 @@ Class list gồm 1000 lớp đến từ tập dữ liệu ImageNet-1K — tập 
 bộ dữ liệu/taxonomy khác nhau. `class_id` (468) mới là định danh chính xác, duy nhất trong đúng phiên bản taxonomy được ghi rõ ở `taxonomy_name` ("ImageNet-1K"). Giữ đủ cả ba giúp
 người review truy vết được nhãn về đúng nguồn gốc, tránh nhầm lẫn khi so sánh kết quả giữa các model hoặc phiên bản taxonomy khác nhau.
 - Nếu ảnh có nhiều chủ thể, guideline cần quy định điều gì?
-  Ảnh `traffic` là ví dụ rõ ràng: có hàng chục xe khác loại (xe buýt, xe con, xe van) cùng xuất
-  hiện, và điểm số của 3 lớp đứng đầu khá sít sao (cab 0.51, minibus 0.16, police_van 0.09).
-  Guideline cần quy định rõ tiêu chí chọn "chủ thể chính" khi ảnh có nhiều đối tượng (ví dụ:
-  đối tượng chiếm diện tích lớn nhất, nằm giữa khung hình, hoặc là chủ thể theo ý đồ chụp), và
-  quy định cách xử lý khi không xác định được chủ thể chính — nên đánh dấu ảnh là "ambiguous"
-  để chuyển sang review thủ công thay vì mặc định chấp nhận nhãn rank=1 của model.
+VD ảnh `traffic`: có hàng chục xe khác loại (xe buýt, xe con, xe van) cùng xuất hiện, và điểm số của 3 lớp đứng đầu khá sít sao (cab 0.51, minibus 0.16, police_van 0.09). Guideline cần quy định rõ tiêu chí chọn "chủ thể chính" khi ảnh có nhiều đối tượng (ví dụ: đối tượng chiếm diện tích lớn nhất, nằm giữa khung hình, hoặc là chủ thể theo ý đồ chụp), và quy định cách xử lý khi không xác định được chủ thể chính — nên đánh dấu ảnh là "ambiguous" để chuyển sang review thủ công thay vì mặc định chấp nhận nhãn rank=1 của model.
 - Vì sao model score không phải ground truth?
-  Score 0.510915 chỉ phản ánh mức độ tự tin nội bộ của model, tính từ xác suất đầu ra của
-  mạng nơ-ron — nó chưa từng được con người xác nhận hay đối chiếu. Khoảng cách sát sao giữa
-  rank 1 (0.51) và rank 2 (0.16) cho thấy bản thân model cũng không chắc chắn tuyệt đối. Ground
-  truth chỉ được xác lập khi có annotator/guideline xác nhận, còn score cao vẫn có thể sai nếu
-  ảnh nằm ngoài phân bố dữ liệu huấn luyện hoặc có nhiều chủ thể gây nhập nhằng như ảnh này.
+Score 0.510915 chỉ phản ánh mức độ tự tin nội bộ của model, chưa từng được con người xác nhận hay đối chiếu. Khoảng cách sát sao giữa rank 1 (0.51) và rank 2 (0.16) cho thấy bản thân model cũng không chắc chắn tuyệt đối. Ground truth chỉ được xác lập khi có annotator/guideline xác nhận, còn score cao vẫn có thể sai nếu ảnh nằm ngoài phân bố dữ liệu huấn luyện hoặc có nhiều chủ thể gây nhập nhằng như ảnh này.
 ## 2. Phát hiện vật thể – lớp và box cho từng object
 
 Nguồn evidence: `detection_predictions.json` và `visuals/detection_predictions.png`, sample `kitchen`.
@@ -53,13 +44,10 @@ Nguồn evidence: `detection_predictions.json` và `visuals/detection_prediction
   `bbox_width=113.58`, `bbox_height=279.68`.
 
 - Diễn giải vị trí box bằng lời:
-  Đây là người đứng cạnh bếp trong ảnh `kitchen` (640×427px). Box nằm lệch về phía bên phải
-  của ảnh và kéo dài gần hết chiều cao khung hình, từ gần đỉnh ảnh xuống gần đáy. Vì là người
-  đang đứng nên box có dạng đứng, cao gấp gần 2.5 lần chiều rộng (279.68 so với 113.58) — hình
-  dạng này khá điển hình cho một người được chụp trọn thân từ phía sau.
+Đây là người đứng cạnh bếp trong ảnh `kitchen` (640×427px). Box nằm lệch về phía bên phải của ảnh và kéo dài gần hết chiều cao khung hình, từ gần đỉnh ảnh xuống gần đáy. Vì là người đang đứng nên box có dạng đứng, cao gấp gần 2.5 lần chiều rộng (279.68 với 113.58) 
 
 - So sánh số prediction ở hai threshold:
-Hạ ngưỡng xuống 0.20 thì model bắt được tới 17 vật thể: `person×2, bowl×5, oven×2, cup×2,spoon×3, potted plant, dining table, bottle` — kể cả những thứ nhỏ và mờ như thìa hay chậu cây.Đẩy ngưỡng lên 0.60 thì chỉ còn lại 6 vật thể `person×2, bowl×2, oven×2` — gần như chỉ giữ người và các vật rõ ràng nhất. Nói cách khác, ngưỡng càng thấp càng "nhặt" được nhiều nhưng cũng dễ nhặt nhầm.
+Hạ ngưỡng xuống 0.2 thì model bắt được tới 17 vật thể: `person×2, bowl×5, oven×2, cup×2,spoon×3, potted plant, dining table, bottle` — kể cả những thứ nhỏ và mờ như thìa hay chậu cây.Đẩy ngưỡng lên 0.6 thì chỉ còn lại 6 vật thể `person×2, bowl×2, oven×2` 
 - Điều gì thay đổi đối với độ bao phủ và khối lượng reviewer cần xem?
 Ngưỡng thấp giúp không bỏ sót vật thể (recall cao) nhưng đổi lại reviewer phải ngồi xem và xác nhận nhiều box hơn hẳn, trong đó có không ít box có thể là dự đoán sai hoặc chưa chắc chắn. Ngưỡng cao thì ngược lại: nhàn cho reviewer vì ít box phải kiểm tra, nhưng rủi ro là bỏ sót thật những vật nhỏ hoặc bị che khuất một phần — như mấy cái thìa hay chậu cây biến mất hoàn toàn khỏi danh sách khi lên ngưỡng 0.60.
 
