@@ -69,7 +69,7 @@ Dùng để phân biệt các đối tượng riêng lẻ trong cùng một tấ
 - Đề xuất một quy tắc biên mask: Đường viền nên bám sát rìa thật của vật thể đến từng pixel một, kể cả những chỗ lõm nhỏ như khoảng hở giữa cánh tay và thân người. Không nên làm mượt đường viền cho đẹp vì làm vậy vô tình nuốt luôn phần nền lọt vào các khe đó, khiến mask trông phồng to hơn vật thể thật.
 
 - Với vùng mờ/tiếp xúc/che khuất, điều gì cần guideline hoặc escalation quyết định?
-Nguyên tắc chung là mask chỉ vẽ cho phần thực sự nhìn thấy được, không đoán mò phần bị che sau vật khác. Ảnh này có mấy cái bowl trên bàn nằm chồng lấn lên nhau (kitchen-002 và kitchen-006 có vùng bbox giao nhau ở khoảng x=31–86, y=344–370), và mask của bàn ăn (kitchen-005) tuy có tới 598 điểm nhưng bị vỡ thành nhiều mảnh rời rạc vì đồ vật đặt trên mặt bàn cắt ngang qua. Với những chỗ như vậy nên đặt ngưỡng tin cậy tối thiểu để chấp nhận, còn nếu vẫn mơ hồ thì escalate cho reviewer quyết định thay vì để mỗi annotator tự vẽ theo cảm tính của riêng mình.
+Mask chỉ vẽ cho phần thực sự nhìn thấy được, không đoán mò phần bị che sau vật khác. Ảnh này có mấy cái bowl trên bàn nằm chồng lấn lên nhau (kitchen-002 và kitchen-006 có vùng bbox giao nhau ở khoảng x=31–86, y=344–370), và mask của bàn ăn (kitchen-005) tuy có tới 598 điểm nhưng bị vỡ thành nhiều mảnh rời rạc vì đồ vật đặt trên mặt bàn cắt ngang qua. Với những chỗ này nên đặt ngưỡng tin cậy tối thiểu để chấp nhận, còn nếu vẫn mơ hồ thì escalate cho reviewer quyết định thay vì để mỗi annotator tự vẽ theo cảm tính của riêng mình.
 
 ## 4. Vòng đời và kiểm tra chất lượng
 
@@ -89,12 +89,12 @@ Nguyên tắc chung là mask chỉ vẽ cho phần thực sự nhìn thấy đư
 
 ## 6. Danh sách bằng chứng
 
-- [Yes] `classification_predictions.json`
-- [Yes] `detection_predictions.json`
-- [Yes] `segmentation_predictions.json`
-- [Yes] `IMAGE_ATTRIBUTION.md`
-- [Yes] `visuals/classification_top5.png`
-- [Yes] `visuals/detection_predictions.png`
-- [Yes] `visuals/segmentation_prediction.png`
-- [Yes] Ô validation cuối notebook báo `PASS`.
-- [Yes] Không có họ tên, MSSV hoặc dữ liệu nhạy cảm trong báo cáo/output.
+- [X] `classification_predictions.json`
+- [X] `detection_predictions.json`
+- [X] `segmentation_predictions.json`
+- [X] `IMAGE_ATTRIBUTION.md`
+- [X] `visuals/classification_top5.png`
+- [X] `visuals/detection_predictions.png`
+- [X] `visuals/segmentation_prediction.png`
+- [X] Ô validation cuối notebook báo `PASS`.
+- [X] Không có họ tên, MSSV hoặc dữ liệu nhạy cảm trong báo cáo/output.
